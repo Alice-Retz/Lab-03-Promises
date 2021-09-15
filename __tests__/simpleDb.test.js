@@ -1,5 +1,5 @@
 import { rm, mkdir } from 'fs/promises';
-import { createId } from '../simpleDb.js';
+import { simpleDB } from '../simpleDb.js';
 
 describe('Routes for simple-db api', () => {
   // create a link to destination folder
@@ -18,7 +18,7 @@ describe('Routes for simple-db api', () => {
   });
 
   it('should check if a saved object has an id', () => {
-    const checkID = new createId(destination);
+    const checkID = new simpleDB(destination);
     const Kiki = {
       name: 'Kiki',
       is: 'a cat',
@@ -28,4 +28,25 @@ describe('Routes for simple-db api', () => {
       expect(Kiki.id).toEqual(expect.any(String));
     });
   });
+
+  it('should save and retrieve an object', () => {
+    const savedInstance = new SavedObject(destination);
+    const getInstance = new GetObject(id);
+    const Kiki = {
+      name: 'Kiki',
+      is: 'a cat',
+    };
+
+    return savedInstance
+      .save(Kiki)
+      .then(() => {
+        return getInstance.get();
+      })
+      .then((booger) => {
+        //Kiki.id?
+        expect(booger).toEqual(Kiki);
+      });
+  });
+
+  it('should return null if no object was returned');
 });
