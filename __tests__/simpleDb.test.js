@@ -19,7 +19,13 @@ describe('Routes for simple-db api', () => {
 
   it('should check if a saved object has an id', () => {
     const checkID = new createId(destination);
+    const Kiki = {
+      name: 'Kiki',
+      is: 'a cat',
+    };
 
-    return checkID;
+    return checkID.save(Kiki).then(() => {
+      expect(Kiki.id).toEqual(expect.any(String));
+    });
   });
 });
