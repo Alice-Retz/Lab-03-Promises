@@ -48,5 +48,11 @@ describe('Routes for simple-db api', () => {
       });
   });
 
-  it('should return null if no object was returned');
+  it('should return null if no object was returned', () => {
+    const getInstance = new GetObject(id);
+
+    return getInstance.get().then((booger) => {
+      expect(booger).toBeNull();
+    });
+  });
 });
