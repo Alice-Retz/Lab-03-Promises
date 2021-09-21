@@ -2,23 +2,16 @@ import { rm, mkdir } from 'fs/promises';
 import { simpleDB } from '../simpleDb.js';
 
 describe('Routes for simple-db api', () => {
-  // create a link to destination folder
-  // set up beforeEach to have a clean working slate
-  // First test: does saved object have id?
-  // Write the function
-  // Second test: save and get objects
-  // Write the function
-
-  const destination = './__tests__/dest/';
+  const storeDest = '../store';
 
   beforeEach(() => {
-    return rm(destination, { force: true, recursive: true }).then(() => {
-      return mkdir(destination);
+    return rm(storeDest, { force: true, recursive: true }).then(() => {
+      return mkdir(storeDest);
     });
   });
 
   it('should check if a saved object has an id', () => {
-    const checkID = new simpleDB(destination);
+    const checkID = new simpleDB(storeDest);
     const Kiki = {
       name: 'Kiki',
       is: 'a cat',
@@ -30,8 +23,7 @@ describe('Routes for simple-db api', () => {
   });
 
   it('should save and retrieve an object', () => {
-    const savedInstance = new SavedObject(destination);
-    const getInstance = new GetObject(id);
+    const savedInstance = new simpleDB(storeDest);
     const Kiki = {
       name: 'Kiki',
       is: 'a cat',
@@ -40,19 +32,42 @@ describe('Routes for simple-db api', () => {
     return savedInstance
       .save(Kiki)
       .then(() => {
-        return getInstance.get();
+        return savedInstance.get(Kiki.id);
       })
       .then((booger) => {
-        //Kiki.id?
         expect(booger).toEqual(Kiki);
       });
   });
 
   it('should return null if no object was returned', () => {
-    const getInstance = new GetObject(id);
+    const getInstance = new simpleDB(storeDest);
 
     return getInstance.get().then((booger) => {
       expect(booger).toBeNull();
     });
+  });
+
+  it('should return all saved objects', () => {
+    const savedInstance = new simpleDB(storeDest);
+    const Kiki = {
+      name: 'Kiki',
+      is: 'a cat',
+    };
+    const Professor = {
+      name: 'Professor Pepperoni Pizza',
+      is: 'a cat',
+    };
+
+    return savedInstance
+      .save(Kiki)
+      .then(() => {
+        savedInstance.save(Professor);
+      })
+      .then(() => {
+        return savedInstance.getAll();
+      })
+      .then((catObj) => {
+        expect(catObj).toEqual(expect.arrayContaining([Kiki, Professor]));
+      });
   });
 });
