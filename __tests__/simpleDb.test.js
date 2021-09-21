@@ -2,11 +2,11 @@ import { rm, mkdir } from 'fs/promises';
 import { simpleDB } from '../simpleDb.js';
 
 describe('Routes for simple-db api', () => {
-  const storeDest = '../store';
+  const storeDest = './store';
 
   beforeEach(() => {
     return rm(storeDest, { force: true, recursive: true }).then(() => {
-      return mkdir(storeDest);
+      return mkdir(storeDest, { recursive: true });
     });
   });
 
@@ -66,7 +66,7 @@ describe('Routes for simple-db api', () => {
       .then(() => {
         return savedInstance.getAll();
       })
-      .then((catObj) => {
+      .then(catObj => {
         expect(catObj).toEqual(expect.arrayContaining([Kiki, Professor]));
       });
   });
