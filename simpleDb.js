@@ -15,10 +15,9 @@ export class simpleDB {
     obj.id = shortid.generate();
     const filePath = this.filePath(obj.id);
     const jString = JSON.stringify(obj);
-    return writeFile(filePath, jString)
-      .then(() => {
-        return obj.id;
-      });
+    return writeFile(filePath, jString).then(() => {
+      return obj.id;
+    });
   }
 
   get(id) {
@@ -36,20 +35,20 @@ export class simpleDB {
   getAll() {
     const source = './store';
 
-    return readdir(this.storeDest).then(cats => {
+    return readdir(this.storeDest).then((cats) => {
       return Promise.all(
-        cats.map(catObj => {
+        cats.map((catObj) => {
           return path.join(source, catObj);
         })
-      )
-        .then((whatever) => {
-          return Promise.all(
-            whatever.map(catIds => {
-              return readFile(catIds, 'utf-8')
-                .then((contentText) => JSON.parse(contentText));
-            })
-          );
-        });
+      ).then((whatever) => {
+        return Promise.all(
+          whatever.map((catIds) => {
+            return readFile(catIds, 'utf-8').then((contentText) =>
+              JSON.parse(contentText)
+            );
+          })
+        );
+      });
     });
   }
 }

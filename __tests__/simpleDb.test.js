@@ -6,7 +6,7 @@ describe('Routes for simple-db api', () => {
 
   beforeEach(() => {
     return rm(storeDest, { force: true, recursive: true }).then(() => {
-      return mkdir(storeDest, { recursive: true });
+      return mkdir(storeDest);
     });
   });
 
@@ -47,27 +47,24 @@ describe('Routes for simple-db api', () => {
     });
   });
 
-  it('should return all saved objects', () => {
+  it('should return all saved objects', async () => {
     const savedInstance = new simpleDB(storeDest);
-    const Kiki = {
+    const kiki = {
       name: 'Kiki',
       is: 'a cat',
     };
-    const Professor = {
+    const professor = {
       name: 'Professor Pepperoni Pizza',
       is: 'a cat',
     };
-
-    return savedInstance
-      .save(Kiki)
-      .then(() => {
-        savedInstance.save(Professor);
+    const testArr = [kiki, professor];
+    await Promise.all(
+      testArr.map((testMap) => {
+        return savedInstance.save(testMap);
       })
-      .then(() => {
-        return savedInstance.getAll();
-      })
-      .then(catObj => {
-        expect(catObj).toEqual(expect.arrayContaining([Kiki, Professor]));
-      });
+    );
+    return savedInstance.getAll().then((pulledFiles) => {
+      expect(pulledFiles).toEqual(expect.arrayContaining([kiki, professor]));
+    });
   });
 });
