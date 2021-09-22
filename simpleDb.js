@@ -33,12 +33,10 @@ export class simpleDB {
   }
 
   getAll() {
-    const source = './store';
-
     return readdir(this.storeDest).then((cats) => {
       return Promise.all(
         cats.map((catObj) => {
-          return path.join(source, catObj);
+          return path.join(this.storeDest, catObj);
         })
       ).then((whatever) => {
         return Promise.all(
